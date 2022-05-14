@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tutorial } from 'src/app/models/tutorial.model';
 import { TutorialService } from 'src/app/services/tutorial.service';
+import { CrudService } from 'src/app/services/crud.service';
 
 @Component({
   selector: 'app-tutorials-list',
@@ -9,26 +10,34 @@ import { TutorialService } from 'src/app/services/tutorial.service';
 })
 export class TutorialsListComponent implements OnInit {
 
-  tutorials?: Tutorial[];
+  tutorials:any;
   currentTutorial: Tutorial = {};
   currentIndex = -1;
   title = '';
 
-  constructor(private tutorialService: TutorialService) { }
-
+  constructor(
+    private tutorialService: TutorialService,
+    private crud:CrudService
+  ) { }
+  serviceName = this.crud.serviceName;
   ngOnInit(): void {
-    this.retrieveTutorials();
+    this.crud.getAll().subscribe((res: any) => {
+      this.tutorials = res;
+    });
+    
+    // console.log("get all data",this.crud.getAll());
+    //this.retrieveTutorials();
+    
   }
 
   retrieveTutorials(): void {
-    this.tutorialService.getAll()
-      .subscribe({
-        next: (data) => {
-          this.tutorials = data;
-          console.log(data);
-        },
-        error: (e) => console.error(e)
-      });
+    // this.tutorialService.getAll()
+    //   .subscribe({
+    //     next: (data) => {
+    //       this.tutorials = data;
+    //     },
+    //     error: (e) => console.error(e)
+    //   });
   }
 
   refreshList(): void {
